@@ -1,0 +1,24 @@
+orbs:
+  gcp-gcr: circleci/gcp-gcr@0.6.1
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: us.gcr.io/infra-dev-challenge/dind-builder:latest
+    environment:
+      REGISTRY: us.gcr.io
+      GOOGLE_PROJECT_ID: infra-dev-challenge
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Functions inside the container used in this job
+          command: |
+            source /scripts/functions.sh
+            docker_build
+
+workflows:
+  build_and_push_image:
+    jobs:
+      - build
